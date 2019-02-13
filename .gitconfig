@@ -1,0 +1,11 @@
+[user]
+	email = bogato@vivaldi.net
+	name = Bogato d'Oswaldo
+[core]
+	editor = vim
+[alias]
+	graph = log --graph --color
+	st = status -sb
+	unstage = reset HEAD --
+[diff]
+	editor = vimdiff
