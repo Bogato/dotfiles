@@ -2,70 +2,74 @@ set nocompatible "be iMproved
 filetype off
 
 " ---------------------------------------------------------------------------
-" Plugins manager
+" Plugin manager
 " ---------------------------------------------------------------------------
-" [Vundle.vim] [init] Vundle, the plug-in manager for Vim.
-" https://github.com/VundleVim/Vundle.Vim
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" let Vundle manage Vundle
-Plugin 'VundleVim/Vundle.vim'
+" [vim-plug] [init] A minimalist Vim plugin manager.
+" https://github.com/junegunn/vim-plug
+if empty(glob('~/.vim/autoload/plug.vim'))
+  !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
-" [Vundle.vim] [plugins]
+call plug#begin('~/.vim/plugged')
+" [vim-plug] [plugins]
 " * API *
-Plugin 'mattn/webapi-vim'
 " * Utilities *
-Plugin 'scrooloose/nerdtree'
-Plugin 'kien/ctrlp.vim'
+Plug 'scrooloose/nerdtree'
+Plug 'kien/ctrlp.vim'
 " Statusline
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-" Plugin 'bling/vim-bufferline'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+" Plug 'bling/vim-bufferline'
 " Git
-Plugin 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive'
 " Org-like
-Plugin 'tpope/vim-speeddating'
-Plugin 'jceb/vim-orgmode'
+Plug 'tpope/vim-speeddating'
+Plug 'jceb/vim-orgmode'
+" Json
+Plug 'mogelbrod/vim-jsonpath'
 " Misc
-Plugin 'let-def/vimbufsync'
+Plug 'let-def/vimbufsync'
 
 " * Languages *
 " OCamL
-Plugin 'let-def/ocp-indent-vim'
+Plug 'let-def/ocp-indent-vim'
+Plug 'ELLIOTTCABLE/vim-menhir'
 " SMT-LIB2
-Plugin 'bohlender/vim-smt2'
+Plug 'bohlender/vim-smt2'
 " Coq
-Plugin 'the-lambda-church/coquille'
+Plug 'the-lambda-church/coquille'
 " Python
-Plugin 'davidhalter/jedi-vim'
-"Plugin 'klen/python-mode'
+Plug 'davidhalter/jedi-vim'
+"Plug 'klen/python-mode'
 " Scala
-" Plugin 'derekwyatt/vim-scala'
+" Plug 'derekwyatt/vim-scala'
 " LLVM
-Plugin 'rhysd/vim-llvm'
+Plug 'rhysd/vim-llvm'
 " Rust
-Plugin 'rust-lang/rust.vim'
+Plug 'rust-lang/rust.vim',
 " Markdown
-Plugin 'plasticboy/vim-markdown'
-Plugin 'mzlogin/vim-markdown-toc'
+Plug 'plasticboy/vim-markdown'
+Plug 'mzlogin/vim-markdown-toc'
 " Latex
-Plugin 'vim-latex/vim-latex'
+Plug 'lervag/vimtex'
 " Syntastic, the syntax checker
-Plugin 'scrooloose/syntastic'
+Plug 'scrooloose/syntastic'
 " And finally... YCM
 if v:version > 702
-  Plugin 'Valloric/YouCompleteMe'
+  Plug 'Valloric/YouCompleteMe'
 endif
 
 " * Cosmetic *
 " Colorscheme
-"Plugin 'reedes/vim-colors-pencil'
-Plugin 'itchyny/landscape.vim'
-Plugin 'altercation/vim-colors-solarized'
-"Plugin 'tomasr/molokai'
+"Plug 'reedes/vim-colors-pencil'
+Plug 'itchyny/landscape.vim'
+Plug 'altercation/vim-colors-solarized'
+"Plug 'tomasr/molokai'
 
-" [Vundle.vim] [end] plugins available after.
-call vundle#end()
+" [vim-plug] [end] plugins available after.
+call plug#end()
 filetype plugin indent on
 
 
@@ -159,7 +163,10 @@ let g:airline_left_sep = "\u2599"
 let g:airline_right_sep = "\u259F"
 
 " *airline-extensions*
+" Smarter tab line
+" Automatically displays all buffers when there is only one tab open
 let g:airline#extensions#tabline#enabled = 1 "Smarter tab line
+
 set laststatus=2 "override default no status line if no split
 
 
@@ -172,12 +179,12 @@ let g:ycm_autoclose_preview_window_after_insertion = 1
 "colorscheme landscape
 if has("gui_running")
     set background="dark"
-    colorscheme solarized
+    silent! colorscheme solarized
     let g:airline_theme='solarized'
     set guioptions-=T
 else
     set background="dark"
-    colorscheme landscape
+    silent! colorscheme landscape
 endif
 
 " ---------------------------------------------------------------------------
