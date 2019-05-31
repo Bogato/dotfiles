@@ -1,5 +1,4 @@
 set nocompatible "be iMproved
-filetype off
 
 " ---------------------------------------------------------------------------
 " Plugin manager
@@ -12,65 +11,61 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+if has('python3')
+endif
+
 call plug#begin('~/.vim/plugged')
 " [vim-plug] [plugins]
-" * API *
 " * Utilities *
 Plug 'scrooloose/nerdtree'
-Plug 'kien/ctrlp.vim'
 " Statusline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-" Plug 'bling/vim-bufferline'
 " Git
 Plug 'tpope/vim-fugitive'
 " Org-like
 Plug 'tpope/vim-speeddating'
-Plug 'jceb/vim-orgmode'
-" Json
-Plug 'mogelbrod/vim-jsonpath'
-" Misc
-Plug 'let-def/vimbufsync'
 
 " * Languages *
 " OCamL
-Plug 'let-def/ocp-indent-vim'
-Plug 'ELLIOTTCABLE/vim-menhir'
+let g:opamshare = substitute(system('opam config var share'),'\n$','',"")
+" [Merlin] Context sensitive completion for OCaml in 'Vim' and 'M-x emacs'
+Plug g:opamshare . '/merlin', { 'rtp': 'vim' }
+" [ocp-indent] is a customizable tool to indent OCaml code.
+Plug g:opamshare . '/ocp-indent', { 'rtp': 'vim' }
+
 " SMT-LIB2
 Plug 'bohlender/vim-smt2'
-" Coq
-Plug 'the-lambda-church/coquille'
+
 " Python
 Plug 'davidhalter/jedi-vim'
-"Plug 'klen/python-mode'
-" Scala
-" Plug 'derekwyatt/vim-scala'
-" LLVM
-Plug 'rhysd/vim-llvm'
+Plug 'klen/python-mode'
+
 " Rust
 Plug 'rust-lang/rust.vim',
-" Markdown
-Plug 'plasticboy/vim-markdown'
-Plug 'mzlogin/vim-markdown-toc'
+
 " Latex
 Plug 'lervag/vimtex'
-" Syntastic, the syntax checker
-Plug 'scrooloose/syntastic'
-" And finally... YCM
-if v:version > 702
-  Plug 'Valloric/YouCompleteMe'
+
+" [neomake] Asynchronous linting and make framework for Neovim/Vim
+Plug 'neomake/neomake'
+" [deoplete] Dark powered asynchronous completion framework for neovim/Vim8
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
 endif
+Plug 'copy/deoplete-ocaml'
 
 " * Cosmetic *
 " Colorscheme
-"Plug 'reedes/vim-colors-pencil'
 Plug 'itchyny/landscape.vim'
 Plug 'altercation/vim-colors-solarized'
-"Plug 'tomasr/molokai'
 
 " [vim-plug] [end] plugins available after.
 call plug#end()
-filetype plugin indent on
 
 
 " ---------------------------------------------------------------------------
@@ -117,6 +112,9 @@ syn on se title
 " ---------------------------------------------------------------------------
 " Global plugins
 " ---------------------------------------------------------------------------
+call neomake#configure#automake('w')
+let g:deoplete#enable_at_startup = 1
+
 " [NERDTree] [options] A tree explorer plugin for vim.
 " https://github.com/scrooloose/nerdtree
 " Open NERDTree at startup if no file are specified
@@ -156,18 +154,12 @@ set wildignore+=*.cm* "Ocaml
 " air.
 " https://github.com/vim-airline/vim-airline
 " *airline-customization*
-"if !exists('g:airline_symbols')
-"  let g:airline_symbols = {}
-"endif
 let g:airline_left_sep = "\u2599"
 let g:airline_right_sep = "\u259F"
-
 " *airline-extensions*
 " Smarter tab line
 " Automatically displays all buffers when there is only one tab open
 let g:airline#extensions#tabline#enabled = 1 "Smarter tab line
-
-set laststatus=2 "override default no status line if no split
 
 
 " [YouCompleteMe] [options] A code-completion engine for Vim
@@ -188,26 +180,9 @@ else
 endif
 
 " ---------------------------------------------------------------------------
-" Python
-" ---------------------------------------------------------------------------
-if exists('py2') && has('python')
-    " TODO
-elseif has('python3')
-    " TODO
-endif
-
-" ---------------------------------------------------------------------------
 " OCaml
 " ---------------------------------------------------------------------------
-let g:opamshare = substitute(system('opam config var share'),'\n$','',"")
-
-" [ocp-indent] is a customizable tool to indent OCaml code.
-" We don't use the default plugin provided by [ocp-indent] since it doesn't
-" provide interactive indentation as you type.
-"execute "set rtp^=" . g:opamshare . "/ocp-indent/vim"
-
-" [Merlin] Context sensitive completion for OCaml in 'Vim' and 'M-x emacs'
-execute "set rtp+=" . g:opamshare . "/merlin/vim"
+let no_ocaml_maps=1
 
 " [coquille] Interactive theorem proving with Coq in vim.
 " Maps Coquille commands to <F2> (Undo), <F3> (Next), <F4> (ToCursor)
@@ -223,10 +198,6 @@ if isdirectory(s:why3_datadir)
     execute "set rtp+=" . s:why3_datadir . "/vim"
 endif
 
-" [Syntastic] Let's add 'A Kind Of Magic'
-let g:syntastic_ocaml_checkers = ['merlin']
-
-
 " ---------------------------------------------------------------------------
 " Rust
 " ---------------------------------------------------------------------------
@@ -240,8 +211,3 @@ let g:ycm_rust_src_path = g:rustsysroot . "/lib/rustlib/src/rust/src"
 autocmd Filetype tex setlocal et ts=2 sw=2
 let g:Tex_DefaultTargetFormat = 'pdf'
 let g:Tex_MultipleCompileFormats = 'pdf, aux'
-
-
-" ---------------------------------------------------------------------------
-" General options
-" ---------------------------------------------------------------------------
